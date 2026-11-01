@@ -4,7 +4,7 @@ title: '#4471 is three problems, not one'
 owner: Pachciar3
 status: open
 reviewed: 2026-11-01
-signature: Pachciar3
+signature: v1.eyJzdWIiOiIzMDEwIiwiYXVkIjoiY2hhbGxlbmdlOndoYXQtaXQtc2hvd3MiLCJpYXQiOjE3OTM1MjAxMTIsImV4cCI6MTc5MzYwNjUxMn0.NDKA8Ic0JD3B7peDIJPtdB3WwM5t0y0Phy5uMi1Eh_o
 ---
 
 <script>
