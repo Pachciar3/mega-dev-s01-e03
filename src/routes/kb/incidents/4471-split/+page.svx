@@ -1,0 +1,67 @@
+---
+layout: runbook
+title: '#4471 is three problems, not one'
+owner: Pachciar3
+status: open
+reviewed: 2026-11-01
+signature: Pachciar3
+---
+
+<script>
+  import ProblemTable from '#lib/kb/ProblemTable.svelte';
+  import Callout from '#lib/kb/Callout.svelte';
+  import RenderStamp from '#lib/kb/RenderStamp.svelte';
+
+  const repo = 'https://github.com/Pachciar3/mega-dev-s01-e03/issues';
+  const issues = { parser: `${repo}/1`, hint: `${repo}/2`, shift: `${repo}/3` };
+</script>
+
+[#4471](/kb/incidents/4471) says one issue, one fix queued. Read report by report, the reports
+merged into it show three different problems. The queued fix is for one of them. Each problem
+now has its own ticket.
+
+<Callout kind="warn">
+When the parser fix ships, two of these problems stay. Do not close their tickets with #4471.
+</Callout>
+
+## What the reports show
+
+<ProblemTable ticket={4471} {issues} />
+
+### `parser`: the shared parser reads dates month first
+
+Day-first tenants write `7/4` for 7 April; the parser reads 4 July. Day and month swap. This
+is the bug the #4471 page describes, and the queued fix is for it. It reaches every channel.
+
+### `hint`: the booking-v3 form tells people to type the month first
+
+booking-v3 prints `MM/DD/YYYY` under its date field. People do what the hint says, and the form
+then reads the date the tenant's way, day first. The result looks exactly like `parser`: day and
+month swap. It only happens on the form of booking-v3 tenants, and the parser fix does not
+touch it. The hint and the form must agree.
+
+### `shift`: the date moves by one day
+
+These reports describe a date one day off, not a swap: "Tuesday 12 May" in the invite,
+Monday 11 May in the calendar; one meeting on Tuesday in Lisbon and Monday in Toronto; an
+invite that arrives before the booking was made. A month/day swap cannot produce that. It
+looks like a time zone conversion, and neither fix above touches it. The desk had already
+listed these reports (`desk-notes.json`) but left them under `parser` by tenant.
+
+## Why they ended up in one ticket
+
+- [Decision 0001](/kb/decisions/0001-dedupe-by-subject) merges on subject line alone. Every
+  problem here produces the same subjects ("Wrong day on the invite", "Dates mixed up"), so
+  subject matching cannot tell them apart.
+- Intake's tag comes from the reporter's browser, not the tenant. The "intake agreed" column
+  shows how often it matched. Use the tenant, its form and the channel (`causes.ts`), and read
+  the body.
+- The ticket export pages overlap. Count reports by id, not by row.
+
+## For the desk
+
+- Merge into a ticket by cause, not by subject. A replacement for decision 0001 is needed.
+- When a body describes a different move (one day, not a swap), file it apart even if the
+  tenant fits a known cause.
+
+<RenderStamp {signature} />
